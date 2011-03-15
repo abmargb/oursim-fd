@@ -1,0 +1,109 @@
+<project name="OurSim" basedir="." default="dist">
+
+	<property file="build.properties" />
+
+	<!-- CLASSPATH -->
+	<path id="classpath">
+		<fileset dir="${dist.dir}/${application.name}/lib">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="dist">
+		<antcall target="clean" />
+		<antcall target="prepare" />
+		<antcall target="compile" />
+		<antcall target="create-jar" />
+		<!--antcall target="javadoc" /--> 
+		<!--copy file="./resources/exemplo-de-execucao.txt" todir="${dist.dir}/${application.name}" /-->
+		<copy todir="${dist.dir}/${application.name}/input-files">
+			<fileset dir="./input-files">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+		<zip destfile="${dist.dir}/${jar.name}.zip" basedir="${dist.dir}/${application.name}" />
+		<delete dir="${build.classes.dir}" />
+		
+		<antcall target="dist2clients" />
+		
+	</target>
+
+	<target name="dist2clients">
+		<echo>Copiando o jar para os projetos clientes...</echo>
+		<copy file="${jar.path}" todir="../SpotInstancesSimulator/lib" />
+	</target>
+	
+	<!-- compila -->
+	<target name="compile">
+		<echo>Compilando...</echo>
+		<javac destdir="${build.classes.dir}" target="1.5" debug="true" deprecation="false" optimize="false" failonerror="true" encoding="UTF-8">
+			<src path="${src.dir}" />
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<!-- gera o .jar e copia para a pasta dist do projeto -->
+	<target name="create-jar">
+		<echo>Gerando jar ...</echo>
+		<jar destfile="${jar.path}">
+			<fileset dir="${build.classes.dir}">
+				<include name="**/*.class" />
+			</fileset>
+			<fileset dir="${src.dir}">
+				<include name="**/*.properties" />
+			</fileset>
+			<fileset dir="${src.dir}">
+				<include name="**/*.java" />
+			</fileset>
+			<!-- Tornando o jar executável-->
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}" />
+				<!-- Dependências existentes na aplicação -->
+				<attribute name="Class-Path" value="${project.dependencies}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- remove a pasta dist e outras que precisar -->
+	<target name="clean">
+		<echo>Removendo diretórios não usados ...</echo>
+		<delete dir="${build.classes.dir}" />
+		<delete dir="${jar.path}" />
+		<delete file="${dist.dir}/${jar.name}.zip" />
+		<delete dir="${dist.dir}/${application.name}" />
+	</target>
+
+	<!-- prepara a estrutura de diretórios para a distribuição -->
+	<target name="prepare">
+
+		<echo>Preparando a estrutura de diretórios para a distribuição ...</echo>
+
+		<mkdir dir="${build.classes.dir}" />
+		<mkdir dir="${dist.dir}" />
+
+		<mkdir dir="${dist.dir}/${application.name}" />
+		<mkdir dir="${dist.dir}/${application.name}/conf" />
+		<mkdir dir="${dist.dir}/${application.name}/lib" />
+		<mkdir dir="${dist.dir}/${application.name}/doc" />
+		<mkdir dir="${dist.dir}/${application.name}/test" />
+
+		<copy file="lib/commons-lang-2.4.jar" todir="${dist.dir}/${application.name}/lib" />
+		<copy file="lib/commons-io-1.4.jar" todir="${dist.dir}/${application.name}/lib" />
+		<copy file="lib/commons-collections-3.2.1.jar" todir="${dist.dir}/${application.name}/lib" />
+		<copy file="lib/commons-cli-1.1.jar" todir="${dist.dir}/${application.name}/lib" />
+		<copy file="lib/jahmm-0.6.1.jar" todir="${dist.dir}/${application.name}/lib" />
+		<copy file="lib/ssj.jar" todir="${dist.dir}/${application.name}/lib" />
+
+	</target>
+
+	<target name="javadoc" description="Generates the API documentation">
+		<javadoc sourcepath="${src.dir}" destdir="${dist.dir}/${application.name}/doc" encoding="UTF-8" docencoding="ISO-8859-1" classpathref="classpath" defaultexcludes="yes" author="false" version="false" use="true" windowtitle="Javadoc OurSim - OurGrid Simulator">
+			<doctitle>
+				<![CDATA[<h1>Javadoc OurSim - OurGrid Simulator</h1>]]></doctitle>
+		<bottom>
+			<![CDATA[<i>OurSim - OurGrid Simulator, 2010</i>]]></bottom>
+	<link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
+</javadoc>
+</target>
+
+</project>

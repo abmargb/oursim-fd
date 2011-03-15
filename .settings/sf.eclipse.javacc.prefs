@@ -1,0 +1,12 @@
+#Thu Aug 05 15:53:22 BRT 2010
+CLEAR_CONSOLE=false
+JAVACC_OPTIONS=-OUTPUT_DIRECTORY\=/home/edigley/workspace/OurSim/src/br/edu/ufcg/lsd/oursim/entities/spotinstances/parser
+JJDOC_OPTIONS=
+JJTREE_OPTIONS=
+JJ_NATURE=true
+JTB_OPTIONS=
+RUNTIME_JAR=-intern-
+RUNTIME_JTBJAR=-intern-
+SHOW_CONSOLE=true
+SUPPRESS_WARNINGS=true
+eclipse.preferences.version=1
